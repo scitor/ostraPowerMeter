@@ -1,0 +1,81 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <AssemblyName>PowerMeter</AssemblyName>
+    <Description>Shows power usage on Nav Console and Overlay</Description>
+    <Version>0.5.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>PowerMeter</RootNamespace>
+    <BasePath>E:\Steam\SteamApps\common\Ostranauts</BasePath>
+    <ReferencePath>$(BasePath)\Ostranauts_Data\Managed</ReferencePath>
+    <Configurations>Debug;Release;UMM;BepInEx</Configurations>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <AssemblySearchPaths>
+       $(AssemblySearchPaths);
+       $(ReferencePath);
+    </AssemblySearchPaths>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ConfigurationName)' == 'UMM'">
+    <DefineConstants>UMM</DefineConstants>
+    <OutputPath>$(OutputPath)\UMM\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(ConfigurationName)' == 'BepInEx'">
+    <OutputPath>$(OutputPath)\BepInEx\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='UMM|AnyCPU'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='BepInEx|AnyCPU'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp" />
+    <Reference Include="UnityEngine.UI" />
+    <Reference Include="UnityEngine" />
+	  <Reference Include="TextMeshPro-5.6-Runtime" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(ConfigurationName)' == 'UMM'">
+    <Reference Include="UnityModManager">
+      <HintPath>$(ReferencePath)\UnityModManager\UnityModManager.dll</HintPath>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(ReferencePath)\UnityModManager\0Harmony.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(ConfigurationName)' == 'BepInEx'">
+    <Reference Include="BepInEx">
+      <HintPath>$(BasePath)\BepInEx\core\BepInEx.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx.Harmony">
+      <HintPath>$(BasePath)\BepInEx\core\BepInEx.Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(BasePath)\BepInEx\core\0Harmony.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <!-- Copy to build folder -->
+    <Copy Condition="'$(ConfigurationName)' == 'UMM'" SourceFiles="$(TargetPath)" DestinationFolder="build/UMM/" />
+    <Copy Condition="'$(ConfigurationName)' == 'BepInEx'" SourceFiles="$(TargetPath)" DestinationFolder="build/BepInEx/" />
+
+    <!-- Package after Release build -->
+	<Exec Condition="'$(ConfigurationName)' == 'UMM'" Command="powershell -executionpolicy bypass -Command &quot;(./package.ps1 -UMM)&quot;" />
+	<Exec Condition="'$(ConfigurationName)' == 'BepInEx'" Command="powershell -executionpolicy bypass -Command &quot;(./package.ps1)&quot;" />
+  </Target>
+</Project>

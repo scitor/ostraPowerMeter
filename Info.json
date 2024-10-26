@@ -1,0 +1,11 @@
+{
+  "Id": "PowerMeter",
+  "DisplayName": "Power Meter",
+  "Author": "scitor",
+  "Version": "0.5.0",
+  "HomePage": "https://github.com/scitor/ostraPowerMeter",
+  "AssemblyName": "PowerMeter.dll",
+  "EntryMethod": "PowerMeter.Main.Load",
+  "ManagerVersion": "0.27.3",
+  "Repository": "https://github.com/scitor/ostraPowerMeter/raw/master/repository.json"
+}
